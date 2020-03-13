@@ -1,3 +1,10 @@
+#Copyright (c) 03.2020 @author  Hussam Soufi: hussam1soufi@gmail.com
+
+#when you run the python script the camera will take a photo
+#you need to choose two boxes (face & hand) that you don't want to collapse!
+#Then press Enter to start tracking and ESC to Exit
+#Have fun and stay healthy. Cheers! - Sam
+
 import cv2 #pip install opencv-contrib-python
 import numpy as np
 import sys
