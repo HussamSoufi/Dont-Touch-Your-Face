@@ -20,24 +20,24 @@ sound = vlc.MediaPlayer(AlarmPath)
 AlarmPlaying = False
 
 #Capture Video
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-tracker = cv2.TrackerMIL_create()
+CapTure = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+CapTure.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+CapTure.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+TracKer = cv2.TrackerMIL_create()
 
 # Read frames
-ok, frame = cap.read()
-ok, frame = cap.read()
+ok, frame = CapTure.read()
+ok, frame = CapTure.read()
 if not ok:
-    print('Cannot read video file, make sure to have VLC installed version x64! version x86 wont work')
+    print('Cannot open video, make sure to have VLC installed version x64! version x86 wont work')
     sys.exit()
 
 
 # select box
-bbox = cv2.selectROI(frame, False)
+SelectedBox = cv2.selectROI(frame, False)
 
-# Initialize tracker
-ok = tracker.init(frame, bbox)
+# Initialize TracKer
+ok = TracKer.init(frame, SelectedBox)
 
 def hand_close_to_face(box_face, box_hand):
     x_overlap = max(0, min(box_face[0]+box_face[2], box_hand[0]+box_hand[2]) - max(box_face[0], box_hand[0]))
@@ -45,22 +45,22 @@ def hand_close_to_face(box_face, box_hand):
     return x_overlap * y_overlap > 0
 
 while(True):
-    ret, frame = cap.read()
+    ret, frame = CapTure.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     face = FrontalFaceDetect.detectMultiScale(frame, 1.5, 2)
     if len(face)>0:
         face = face[0]
         cv2.rectangle(frame, (face[0], face[1]), (face[0] + face[2], face[1] + face[3]), (255, 0, 0), 2)
         
-        # Update tracker
-        ok, bbox = tracker.update(frame)
+        # Update TracKer
+        ok, SelectedBox = TracKer.update(frame)
         # Draw bounding box
         if ok:
             # Tracking success
-            p1 = (int(bbox[0]), int(bbox[1]))
-            p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+            p1 = (int(SelectedBox[0]), int(SelectedBox[1]))
+            p2 = (int(SelectedBox[0] + SelectedBox[2]), int(SelectedBox[1] + SelectedBox[3]))
             cv2.rectangle(frame, p1, p2, (0,0,255), 2)
-            close = hand_close_to_face(face, bbox)
+            close = hand_close_to_face(face, SelectedBox)
 
 
             if close:
@@ -78,5 +78,5 @@ while(True):
     if k == 27:
         break
 
-cap.release()
+CapTure.release()
 cv2.destroyAllWindows()
